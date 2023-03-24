@@ -10,13 +10,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.example.fragmentproject.R
 import com.example.fragmentproject.databinding.FragmentHomeBinding
 import com.example.fragmentproject.databinding.FragmentMisAsistenciasBinding
 import com.example.fragmentproject.extension.openActivity
 import com.example.fragmentproject.extension.replaceFragment
 import com.example.fragmentproject.injection.ViewModulFactoryModule
+import com.example.fragmentproject.ui.home.estadisticas.ClasesFragment
 import com.example.fragmentproject.ui.home.misasistencias.MisAsistenciasFragment
+import com.example.fragmentproject.ui.home.multimedia.MutlimediaFragment
 import com.example.fragmentproject.ui.home.qrscan.QrScanFragment
+import com.example.fragmentproject.ui.web.WebViewFragment
 import com.example.fragmentproject.utils.Constants
 import com.example.fragmentproject.utils.Constants.LOG_IN_APP
 import com.example.fragmentproject.utils.Constants.NOMBRE
@@ -82,6 +86,18 @@ class HomeFragment : Fragment() {
             panel.imgAsitencias.setOnClickListener {
                 replaceFragment(MisAsistenciasFragment(),true)
             }
+
+            panel.imgNoticias.setOnClickListener{
+                replaceFragment(WebViewFragment(),true)
+            }
+
+            panel.imgMultimedia.setOnClickListener{
+                replaceFragment(MutlimediaFragment(),true)
+            }
+
+            panel.imgEstadisticas.setOnClickListener{
+                replaceFragment(ClasesFragment(),true)
+            }
         }
 
     }
@@ -90,7 +106,7 @@ class HomeFragment : Fragment() {
         viewModel.datosUI.observe(viewLifecycleOwner, Observer { res ->
             res.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(data: DataSnapshot) {
-                    binding.homeNombre.text = data.child(NOMBRE).value.toString()
+                    binding.homeNombre.text = "${activity?.getString(R.string.hola)}${data.child(NOMBRE).value.toString()}${getString(R.string.emoji)}"
                     //binding.loading.root.visibility = View.GONE
                 }
 

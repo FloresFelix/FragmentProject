@@ -60,7 +60,6 @@
         android:minHeight="48dp"
         android:padding="8dp"
         android:inputType="textEmailAddress"
-
         android:textSize="20sp"
         android:textColorHint="@color/purple_200"
         app:layout_constraintLeft_toLeftOf="@id/guideline_left"
@@ -75,6 +74,7 @@
         android:background="@drawable/bordertext"
         android:hint="Contraseña"
         android:padding="8dp"
+        android:inputType="textPassword"
         android:textColorHint="@color/purple_200"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="@id/guideline_left"
@@ -129,7 +129,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Aun no tenes cuenta? Regestrate aqui!"
+        android:text="@string/aun_no_tenes_cuenta_regestrate_aqui"
         android:textColor="@color/purple_200"
         android:textSize="15dp"
         android:textStyle="bold"
@@ -148,7 +148,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
         />
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

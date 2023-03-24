@@ -9,14 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.fragmentproject.R
 import com.example.fragmentproject.databinding.FragmentDatosPersonalesBinding
 import com.example.fragmentproject.extension.replaceFragment
+import com.example.fragmentproject.extension.setDataSharedPreferences
 import com.example.fragmentproject.injection.ViewModulFactoryModule
+import com.example.fragmentproject.interactor.GoogleSheetHelper
 import com.example.fragmentproject.model.AlumnoUser
+import com.example.fragmentproject.model.AlumnosDatos
 import com.example.fragmentproject.ui.home.HomeFragment
 import com.example.fragmentproject.ui.login.LoginFragment
 import com.example.fragmentproject.utils.Constants
@@ -32,6 +36,8 @@ class DatosPersonalesFragment : Fragment() {
 
     private var _binding: FragmentDatosPersonalesBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var datosGuardados : AlumnoUser
 
     companion object {
         @JvmStatic
@@ -58,6 +64,8 @@ class DatosPersonalesFragment : Fragment() {
             }
             datosBtnAceptar.setOnClickListener {
                 val alumno = AlumnoUser(datoNombre.text.toString(),datoApellido.text.toString(),datoDni.text.toString(),true)
+                datosGuardados = alumno
+                GoogleSheetHelper.conectionGoogleSheet(requireContext(), AlumnosDatos("nuevovalue",datoDni.text.toString(),datoApellido.text.toString(),datoNombre.text.toString(),null,null))
                 viewModel.setDatosPersonales(alumno)
             }
         }
@@ -85,6 +93,7 @@ class DatosPersonalesFragment : Fragment() {
                         sharedPreferences?.edit()?.apply {
                             putBoolean(DATOS_PERSONALES,true)
                             putBoolean(LOG_IN_APP,true)
+                            setDataSharedPreferences(activity as AppCompatActivity,datosGuardados.dni)
                             apply()
                         }
                         replaceFragment(HomeFragment(),false)

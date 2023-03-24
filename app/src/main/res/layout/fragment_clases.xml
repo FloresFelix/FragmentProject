@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.home.estadisticas.ClasesFragment">
+
+    <EditText
+        android:id="@+id/claseFecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="clase"
+        app:layout_constraintTop_toBottomOf="@+id/guideline_horizontal_clase"
+        android:layout_marginHorizontal="20dp"/>
+    <EditText
+        android:id="@+id/claseDia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="dia"
+        app:layout_constraintTop_toBottomOf="@+id/claseFecha"
+        android:layout_marginHorizontal="20dp"/>
+
+    <EditText
+        android:id="@+id/claseOrden"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="orden"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@+id/claseDia"
+        android:layout_marginHorizontal="20dp"/>
+
+    <Button
+        android:id="@+id/claseAgregar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Agregar"
+        android:textStyle="bold"
+        android:textSize="17dp"
+        android:layout_marginHorizontal="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/claseOrden"/>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guideline_horizontal_clase"
+        app:layout_constraintGuide_percent="0.30"
+        android:orientation="horizontal"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

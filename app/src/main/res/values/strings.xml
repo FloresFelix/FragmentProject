@@ -1,6 +1,10 @@
 <resources>
-    <string name="app_name">FragmentProject</string>
+    <string name="app_name">App Alumnos</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="dise_o_de_videojuego_ii">Diseño De \n Videojuegos II</string>
+    <string name="dise_o_de_videojuego_ii">Diseño De \n Videojuegos I</string>
+    <string name="cantidad_asistencia">Cantidad de Asistencia: </string>
+    <string name="aun_no_tenes_cuenta_regestrate_aqui">Aun no tenes cuenta? <big><b><Strong>Registrate aqui!</Strong></b></big></string>
+    <string name="hola">Hola,\u0020</string>
+    <string name="emoji">&#128516;</string>
 </resources>

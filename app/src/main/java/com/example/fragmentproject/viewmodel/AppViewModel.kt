@@ -1,12 +1,14 @@
 package com.example.fragmentproject.viewmodel
 
 
+import android.mtp.MtpConstants
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fragmentproject.interactor.LoginInteractor
 import com.example.fragmentproject.model.AlumnoUser
+import com.example.fragmentproject.model.NuevaClase
 import com.example.fragmentproject.model.RequestCall
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -19,34 +21,43 @@ class AppViewModel(private var interactor: LoginInteractor) : ViewModel() {
     val setData: LiveData<Boolean> get() = _setData
 
     private val _newUser: MutableLiveData<Task<AuthResult>> = MutableLiveData()
-    val newUser: LiveData<Task<AuthResult>> = _newUser
+    val newUser: LiveData<Task<AuthResult>> get() =  _newUser
 
     private val _login: MutableLiveData<Task<AuthResult>> = MutableLiveData()
-    val login: LiveData<Task<AuthResult>> = _login
+    val login: LiveData<Task<AuthResult>> get() =  _login
 
     private val _datosPersonales : MutableLiveData<Task<Void>> = MutableLiveData()
-    val datosPersonales :  LiveData<Task<Void>> =_datosPersonales
+    val datosPersonales :  LiveData<Task<Void>> get() =_datosPersonales
 
     private val _datosUI : MutableLiveData<DatabaseReference> = MutableLiveData()
-    val datosUI : LiveData<DatabaseReference> = _datosUI
+    val datosUI : LiveData<DatabaseReference> get() =  _datosUI
 
     private val _isRegister : MutableLiveData<DatabaseReference> = MutableLiveData()
-    val isRegister :  LiveData<DatabaseReference> = _isRegister
+    val isRegister :  LiveData<DatabaseReference> get() = _isRegister
 
-    private val _setAsistencia : MutableLiveData<Task<Void>> = MutableLiveData()
-    val setAsistencia : LiveData<Task<Void>> = _setAsistencia
+    private val _setAsistencia : MutableLiveData<Boolean> = MutableLiveData()
+    val setAsistencia : LiveData<Boolean> get() = _setAsistencia
 
     private val _isConnected : MutableLiveData<DatabaseReference> = MutableLiveData()
-    val isconnected : LiveData<DatabaseReference> = _isConnected
+    val isconnected : LiveData<DatabaseReference> get() = _isConnected
 
     private val _logOut :  MutableLiveData<Unit> = MutableLiveData()
-    val logOut :  LiveData<Unit> = _logOut
+    val logOut :  LiveData<Unit> get() = _logOut
 
     private val _misAsistencias : MutableLiveData <DatabaseReference> = MutableLiveData()
-    val  misAsistencias : LiveData<DatabaseReference> = _misAsistencias
+    val  misAsistencias : LiveData<DatabaseReference> get()= _misAsistencias
 
     private val _tokenQR : MutableLiveData<DatabaseReference> = MutableLiveData()
     val tokenQR : LiveData<DatabaseReference> get() = _tokenQR
+
+    private val _listaVideos : MutableLiveData<DatabaseReference> = MutableLiveData()
+    val listaVideos : LiveData<DatabaseReference> get() =  _listaVideos
+
+    private val _nuevaClase : MutableLiveData<Task<Void>> = MutableLiveData()
+    val nuevaClase : LiveData<Task<Void>> get() =  _nuevaClase
+
+
+    private val _cantidadAsistecnias : MutableLiveData<DatabaseReference> = MutableLiveData()
 
     fun setValueFirebase(nombre: String, dni: String) {
         viewModelScope.launch {
@@ -112,6 +123,18 @@ class AppViewModel(private var interactor: LoginInteractor) : ViewModel() {
     fun getTokenQR(){
         viewModelScope.launch {
             _tokenQR.value = interactor.getTokenQR()
+        }
+    }
+
+    fun getListaVideos(){
+        viewModelScope.launch {
+            _listaVideos.value = interactor.getListaVideos()
+        }
+    }
+
+    fun setNuevaClase(fecha: String, value: NuevaClase){
+        viewModelScope.launch {
+            _nuevaClase.value = interactor.setNuevoDia(fecha,value)
         }
     }
 }

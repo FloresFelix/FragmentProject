@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bordertext"
         android:hint="DNI"
-        android:inputType="textEmailAddress"
+        android:inputType="number"
         android:minHeight="48dp"
         android:padding="8dp"
         android:textColorHint="@color/purple_200"

@@ -1,14 +1,18 @@
 package com.example.fragmentproject.ui.register
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.os.PatternMatcher
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.example.fragmentproject.databinding.FragmentRegisterBinding
@@ -68,15 +72,21 @@ class RegisterFragment : Fragment() {
             }
 
             registerBtnAceptar.setOnClickListener {
-                if (registerPassword.text.toString().equals(registerRepPassword.text.toString())) {
-                    //binding.loadingRegister.root.visibility = View.VISIBLE
-                    viewModel.setNewUser(registerEmail.text.toString(), registerPassword.text.toString())
-                } else {
-                    Toast.makeText(
-                        activity,
-                        "las contraseñas deben ser iguales",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                if (registerEmail.text.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(registerEmail.text).matches()) {
+                    if (registerPassword.text.toString().equals(registerRepPassword.text.toString())) {
+                        //binding.loadingRegister.root.visibility = View.VISIBLE
+                        viewModel.setNewUser(registerEmail.text.toString(), registerPassword.text.toString())
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            "las contraseñas deben ser iguales",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }else{
+                    registerEmail.requestFocus()
+                    registerEmail.setError("formato de emial invalido")
                 }
             }
         }
@@ -108,14 +118,6 @@ class RegisterFragment : Fragment() {
     }
 
     private fun goToDatosPerosonales(uid: String) {
-        /*
-        val sharedPreferences = activity?.getSharedPreferences(Constants.SHAREDPREFERENCES_NAME_APP, Context.MODE_PRIVATE)
-        sharedPreferences?.edit()?.apply {
-            putString(USER_UID,uid)
-            apply()
-        }
-
-         */
         replaceFragment(DatosPersonalesFragment(), false)
     }
 

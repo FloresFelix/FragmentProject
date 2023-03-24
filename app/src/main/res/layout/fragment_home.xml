@@ -29,12 +29,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Hola, Felix"
         android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp"
+        tools:text="Hola, Felix"/>
 
     <TextView
         android:id="@+id/design"
@@ -67,7 +67,6 @@
         android:layout_margin="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/design"
-        app:layout_constraintVertical_bias="0.466"
         tools:layout_editor_absoluteX="15dp" />
 
     <include

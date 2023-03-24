@@ -8,14 +8,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import com.example.fragmentproject.databinding.FragmentQrScanBinding
+import com.example.fragmentproject.extension.getDataSharedPreferences
+import com.example.fragmentproject.extension.replaceFragment
 import com.example.fragmentproject.injection.ViewModulFactoryModule
+import com.example.fragmentproject.interactor.GoogleSheetHelper
+import com.example.fragmentproject.model.AlumnosDatos
+import com.example.fragmentproject.ui.home.HomeFragment
 import com.example.fragmentproject.utils.Constants
 import com.example.fragmentproject.utils.Constants.FECHA
 import com.example.fragmentproject.utils.Constants.USER_UID
 import com.example.fragmentproject.viewmodel.AppViewModel
+import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -64,17 +72,34 @@ class QrScanFragment : Fragment() {
                 barcodeLauncher.launch(scan)
             }
         }
-        viewModel.isConnected()
+        //viewModel.isConnected()
         viewModel.getTokenQR()
         addObservers()
     }
 
     private fun addObservers() {
+        /*
         viewModel.setAsistencia.observe(viewLifecycleOwner, Observer { res ->
             res.addOnCompleteListener {
                 if(it.isSuccessful){
                     Toast.makeText(activity, "Asistencia Registrada Con Exito", Toast.LENGTH_LONG).show()
+                    replaceFragment(HomeFragment(),false)
+                    viewModel.setAsistencia.removeObserver{viewLifecycleOwner}
                 }
+            }
+        })
+
+         */
+
+
+
+        viewModel.setAsistencia.observe(viewLifecycleOwner,object: Observer<Boolean>{
+            override fun onChanged(t: Boolean) {
+                println("viemodel es: "+t.toString())
+                Toast.makeText(activity, "Asistencia Registrada Con Exito", Toast.LENGTH_LONG).show()
+                replaceFragment(HomeFragment(),false)
+                requireActivity().viewModelStore.clear()
+
             }
         })
 
@@ -139,6 +164,8 @@ class QrScanFragment : Fragment() {
                        true -> {
                            val uri = Uri.parse(result.contents.toString())
                            val fecha = uri.getQueryParameter(FECHA).toString()
+                           val userDni = getDataSharedPreferences(activity as AppCompatActivity)?:"0"
+                           GoogleSheetHelper.conectionGoogleSheet(requireActivity(), AlumnosDatos("update",userDni,null,null,fecha,null))
                            viewModel.setAsistencia(user_id, fecha)
                        }
                        else -> Toast.makeText(activity, "Codigo QR Invaliio", Toast.LENGTH_LONG).show()
@@ -146,4 +173,15 @@ class QrScanFragment : Fragment() {
                }
            }
         }
+
+
+    override fun onPause() {
+        viewModel.setAsistencia.removeObserver { viewLifecycleOwner}
+        super.onPause()
+    }
+
+    override fun onStop() {
+        viewModel.setAsistencia.removeObserver { viewLifecycleOwner}
+        super.onStop()
+    }
 }

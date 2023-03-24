@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -19,6 +20,7 @@ import androidx.lifecycle.Observer
 import com.example.fragmentproject.R
 import com.example.fragmentproject.databinding.FragmentLoginBinding
 import com.example.fragmentproject.extension.replaceFragment
+import com.example.fragmentproject.extension.setDataSharedPreferences
 import com.example.fragmentproject.injection.ViewModulFactoryModule
 import com.example.fragmentproject.model.AlumnoUser
 import com.example.fragmentproject.ui.home.HomeFragment
@@ -27,6 +29,7 @@ import com.example.fragmentproject.ui.register.RegisterFragment
 import com.example.fragmentproject.utils.Constants
 import com.example.fragmentproject.utils.Constants.DATA_ENTRY
 import com.example.fragmentproject.utils.Constants.DATOS_PERSONALES
+import com.example.fragmentproject.utils.Constants.DNI
 import com.example.fragmentproject.utils.Constants.LOG_IN_APP
 import com.example.fragmentproject.utils.Constants.USER_UID
 import com.example.fragmentproject.viewmodel.AppViewModel
@@ -124,8 +127,9 @@ class LoginFragment : Fragment() {
                 if (it.isSuccessful) {
                     val sharedPreferences = activity?.getSharedPreferences(Constants.SHAREDPREFERENCES_NAME_APP, Context.MODE_PRIVATE)
                     sharedPreferences?.edit()?.apply {
-                        putString(USER_UID, it.result.user?.uid)
                         putBoolean(LOG_IN_APP,true)
+                        putString(USER_UID, it.result.user?.uid)
+                       // putBoolean(LOG_IN_APP,true)
                         apply()
                     }
                     viewModel.tieneDatos(it.result.user?.uid.toString())
@@ -139,9 +143,18 @@ class LoginFragment : Fragment() {
 
             res.addValueEventListener(object :ValueEventListener{
                 override fun onDataChange(data: DataSnapshot) {
-                    val value = data.child(DATA_ENTRY).getValue(Boolean::class.java)?:false
-                    if(value){
+                    val isDataEntry = data.child(DATA_ENTRY).getValue(Boolean::class.java)?:false
+                    val dni = data.child(DNI).value
+                    if(isDataEntry){
+                        val sharedPreferences = activity?.getSharedPreferences(Constants.SHAREDPREFERENCES_NAME_APP, Context.MODE_PRIVATE)
+                        sharedPreferences?.edit()?.apply {
+                            putBoolean(LOG_IN_APP,true)
+                            putBoolean(DATOS_PERSONALES,true)
+                            setDataSharedPreferences(activity as AppCompatActivity,dni.toString())
+                            apply()
+                        }
                         replaceFragment(HomeFragment(),false)
+
                     }else{
                         replaceFragment(DatosPersonalesFragment(),false)
                     }

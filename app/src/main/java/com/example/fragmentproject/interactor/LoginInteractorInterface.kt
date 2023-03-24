@@ -1,6 +1,7 @@
 package com.example.fragmentproject.interactor
 
 import com.example.fragmentproject.model.AlumnoUser
+import com.example.fragmentproject.model.NuevaClase
 import com.example.fragmentproject.model.RequestCall
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
@@ -21,7 +22,7 @@ interface LoginInteractorInterface {
 
     suspend fun tieneDatos(uid: String): DatabaseReference
 
-    suspend fun setAsistencia(user_id: String, fecha: String): Task<Void>
+    suspend fun setAsistencia(user_id: String, fecha: String): Boolean
 
     suspend fun isConnected(): DatabaseReference
 
@@ -30,4 +31,11 @@ interface LoginInteractorInterface {
     suspend fun getTokenQR(): DatabaseReference
 
     suspend fun logOut() : Unit
+
+    suspend fun getListaVideos() : DatabaseReference
+   // suspend fun getCantidadAsistencias() : DatabaseReference
+
+    suspend fun setNuevoDia(fecha: String, value: NuevaClase) : Task<Void>
+
+    suspend fun dummyTest() : String
 }

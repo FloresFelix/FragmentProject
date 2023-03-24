@@ -1,12 +1,14 @@
 package com.example.fragmentproject.ui.home.adapters
 
 import android.graphics.Color
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fragmentproject.R
 import com.example.fragmentproject.model.MiAsistencia
@@ -23,9 +25,12 @@ class MisAsistenciasAdapter (private val mList: List<MiAsistencia>) : RecyclerVi
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mList[position]
-
-        holder.tv_fecha_asistencia.text = item.dia
+        val listaOrdenada = mList.sortedBy {
+            it.numero
+        }
+        val item = listaOrdenada[position]
+        holder.tv_fecha_asistencia.isSingleLine = false
+        holder.tv_fecha_asistencia.text = HtmlCompat.fromHtml(item.dia,HtmlCompat.FROM_HTML_MODE_LEGACY)
         when(item.presente){
             true -> {
                 with(holder){
@@ -51,6 +56,5 @@ class MisAsistenciasAdapter (private val mList: List<MiAsistencia>) : RecyclerVi
         val card = itemView.findViewById<CardView>(R.id.item_card)
 
     }
-
 
 }

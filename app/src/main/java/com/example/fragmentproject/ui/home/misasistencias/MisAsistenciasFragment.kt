@@ -16,7 +16,10 @@ import com.example.fragmentproject.injection.ViewModulFactoryModule
 import com.example.fragmentproject.model.MiAsistencia
 import com.example.fragmentproject.ui.home.adapters.MisAsistenciasAdapter
 import com.example.fragmentproject.utils.Constants
+import com.example.fragmentproject.utils.Constants.APELLIDO
 import com.example.fragmentproject.utils.Constants.DIA
+import com.example.fragmentproject.utils.Constants.DNI
+import com.example.fragmentproject.utils.Constants.NOMBRE
 import com.example.fragmentproject.utils.Constants.PRESENTES
 import com.example.fragmentproject.viewmodel.AppViewModel
 import com.google.firebase.database.DataSnapshot
@@ -27,8 +30,9 @@ import com.google.firebase.database.ValueEventListener
 class MisAsistenciasFragment : Fragment() {
 
     private val viewModel by activityViewModels<AppViewModel>{ ViewModulFactoryModule.loginViewModelFactory}
-    private var _binding : FragmentMisAsistenciasBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding : FragmentMisAsistenciasBinding
+    private lateinit var uid : String
+
     val lista = ArrayList<MiAsistencia>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,28 +44,43 @@ class MisAsistenciasFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentMisAsistenciasBinding.inflate(inflater,container,false)
+        binding = FragmentMisAsistenciasBinding.inflate(inflater,container,false)
 
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        uid = activity?.getSharedPreferences(Constants.SHAREDPREFERENCES_NAME_APP, Context.MODE_PRIVATE)?.getString(Constants.USER_UID, "nada").toString()
+        viewModel.getAsistencias()
+        viewModel.getDataUI(uid)
+        observers()
+
+    }
+
+    private fun observers() {
         val uid = activity?.getSharedPreferences(Constants.SHAREDPREFERENCES_NAME_APP, Context.MODE_PRIVATE)?.getString(Constants.USER_UID, "nada")
         val clases = ArrayList<MiAsistencia>()
-        viewModel.getAsistencias()
         viewModel.misAsistencias.observe(viewLifecycleOwner, Observer { result ->
             result.addValueEventListener(object : ValueEventListener {
+                var cantidad = 0
                 override fun onDataChange(data: DataSnapshot) {
                     clases.clear()
                     for (value :DataSnapshot in data.children){
+
                         val dia = value.child(DIA).getValue(String::class.java)?:"error"
                         val lista_presentes = value.child(PRESENTES).value
                         val presente = lista_presentes.toString().contains(uid.toString())
-                        clases.add(MiAsistencia(dia,presente))
+                        val orden = value.child("numero").getValue(Int::class.java)
+                        presente.also {
+                            clases.add(MiAsistencia(dia,it, orden?:0))
+                            cantidad = if (it) cantidad.plus(1) else cantidad.plus(0)
+                        }
+                        //clases.add(MiAsistencia(dia,presente))
                     }
+                    binding.detAsistencias.text = "${activity?.getString(R.string.cantidad_asistencia)} $cantidad"
                     binding.rvAsistencias.apply {
                         layoutManager = GridLayoutManager(activity,2)
                         adapter = MisAsistenciasAdapter(clases)
@@ -72,6 +91,20 @@ class MisAsistenciasFragment : Fragment() {
                 }
             })
         })
+
+        viewModel.datosUI.observe(viewLifecycleOwner) { result ->
+            result.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(data: DataSnapshot) {
+                    binding.detNombre.text = "Nombre: "+data.child(NOMBRE).value.toString()+" "+ data.child(APELLIDO).value.toString()
+                    binding.detDni.text =  "DNI: "+ data.child(DNI).value.toString()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+
+        }
     }
 
     companion object {
@@ -86,6 +119,5 @@ class MisAsistenciasFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
     }
 }

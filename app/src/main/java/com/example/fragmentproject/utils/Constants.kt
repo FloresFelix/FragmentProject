@@ -8,6 +8,8 @@ object Constants {
     val ALUMNOS = "alumnos"
     val USER_UID = "user_uid"
     val NOMBRE = "nombre"
+    val APELLIDO = "apellido"
+    val DNI = "dni"
     val DATA_ENTRY = "data_entry"
     val FECHA = "fecha"
     val CLASES = "clases"
